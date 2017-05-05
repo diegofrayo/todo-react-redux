@@ -63,7 +63,9 @@ export class Tasks extends Component {
         </div>
 
         <div className="g-col">
-          <TaskFilters filter={this.props.filterType} />
+          <div>
+            <TaskFilters filter={this.props.filterType} />
+          </div>
           <TaskList
             deleteTask={this.props.deleteTask}
             tasks={this.props.tasks}

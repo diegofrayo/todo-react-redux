@@ -9,6 +9,7 @@
   font-size: rem(16px);
   line-height: 24px;
   list-style-type: none;
+  display: inline-block;
 
   @include media-query(540) {
     margin-bottom: 55px;
