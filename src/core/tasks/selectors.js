@@ -6,7 +6,15 @@ export function getTasks(state) {
 }
 
 export function getTaskList(state) {
-  return getTasks(state).list;
+  return getTasks(state).posts;
+}
+
+export function getPublicLists(state) {
+  return getTasks(state).public.lists;
+}
+
+export function getSelectedPublicList(state) {
+  return getTasks(state).public.selectedList;
 }
 
 export function getTaskFilter(state) {
@@ -25,16 +33,16 @@ export function getDeletedTask(state) {
 export const getVisibleTasks = createSelector(
   getTaskList,
   getTaskFilter,
-  (tasks, filter) => {
+  (posts, filter) => {
     switch (filter) {
       case 'active':
-        return tasks.filter(task => !task.completed);
+        return posts.filter(task => !task.completed);
 
       case 'completed':
-        return tasks.filter(task => task.completed);
+        return posts.filter(task => task.completed);
 
       default:
-        return tasks;
+        return posts;
     }
   }
 );

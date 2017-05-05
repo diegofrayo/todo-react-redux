@@ -1,8 +1,20 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
-import { authActions, getAuth } from 'src/core/auth';
-import { paths } from '../routes';
+import React, {
+  Component,
+  PropTypes
+} from 'react';
+import {
+  connect
+} from 'react-redux';
+import {
+  createSelector
+} from 'reselect';
+import {
+  authActions,
+  getAuth
+} from 'src/core/auth';
+import {
+  paths
+} from '../routes';
 import Header from '../components/header';
 
 
@@ -18,20 +30,21 @@ export class App extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const { router } = this.context;
-    const { auth } = this.props;
+    const {
+      router
+    } = this.context;
+    const {
+      auth
+    } = this.props;
 
-    if (auth.authenticated && !nextProps.auth.authenticated) {
-      router.replace(paths.SIGN_IN);
-    }
-    else if (!auth.authenticated && nextProps.auth.authenticated) {
-      router.replace(paths.TASKS);
+    if ((auth.authenticated && !nextProps.auth.authenticated) || (!auth.authenticated && nextProps.auth.authenticated)) {
+      router.replace(paths.ROOT);
     }
   }
 
   render() {
     return (
-      <div>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
         <Header
           authenticated={this.props.auth.authenticated}
           signOut={this.props.signOut}
@@ -50,7 +63,9 @@ export class App extends Component {
 
 const mapStateToProps = createSelector(
   getAuth,
-  auth => ({auth})
+  auth => ({
+    auth
+  })
 );
 
 export default connect(

@@ -1,6 +1,11 @@
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
-import { Task } from 'src/core/tasks';
+import React, {
+  Component,
+  PropTypes
+} from 'react';
+import {
+  Task
+} from 'src/core/tasks';
 
 
 class TaskItem extends Component {
@@ -13,7 +18,9 @@ class TaskItem extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.state = {editing: false};
+    this.state = {
+      editing: false
+    };
 
     this.delete = ::this.delete;
     this.editTitle = ::this.editTitle;
@@ -25,7 +32,7 @@ class TaskItem extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return nextProps.task !== this.props.task ||
-           nextState.editing !== this.state.editing;
+      nextState.editing !== this.state.editing;
   }
 
   delete() {
@@ -33,16 +40,22 @@ class TaskItem extends Component {
   }
 
   editTitle() {
-    this.setState({editing: true});
+    this.setState({
+      editing: true
+    });
   }
 
   saveTitle(event) {
     if (this.state.editing) {
-      const { task } = this.props;
+      const {
+        task
+      } = this.props;
       const title = event.target.value.trim();
 
       if (title.length && title !== task.title) {
-        this.props.updateTask(task, {title});
+        this.props.updateTask(task, {
+          title
+        });
       }
 
       this.stopEditing();
@@ -50,19 +63,22 @@ class TaskItem extends Component {
   }
 
   stopEditing() {
-    this.setState({editing: false});
+    this.setState({
+      editing: false
+    });
   }
 
   toggleStatus() {
     let checked = !this.props.task.completed;
-    this.props.updateTask(this.props.task, {completed: checked});
+    this.props.updateTask(this.props.task, {
+      completed: checked
+    });
   }
 
   onKeyUp(event) {
     if (event.keyCode === 13) {
       this.saveTitle(event);
-    }
-    else if (event.keyCode === 27) {
+    } else if (event.keyCode === 27) {
       this.stopEditing();
     }
   }
@@ -94,8 +110,12 @@ class TaskItem extends Component {
   }
 
   render() {
-    const { editing } = this.state;
-    const { task } = this.props;
+    const {
+      editing
+    } = this.state;
+    const {
+      task
+    } = this.props;
 
     return (
       <div className={classNames('task-item', {'task-item--completed': task.completed, 'task-item--editing': editing})} tabIndex="0">
@@ -129,6 +149,13 @@ class TaskItem extends Component {
               <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
               <path d="M0 0h24v24H0z" fill="none"></path>
             </svg>
+          </button>
+          <button
+            aria-hidden={editing}
+            aria-label="Privacy"
+            className={classNames('btn task-item__button', {'hide': editing})}
+            type="button">
+            <i className="fa fa-lock" aria-hidden="true"></i>
           </button>
           <button
             aria-hidden={editing}

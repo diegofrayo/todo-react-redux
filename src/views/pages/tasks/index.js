@@ -1,18 +1,40 @@
-import { List } from 'immutable';
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
+import {
+  List
+} from 'immutable';
+import React, {
+  Component,
+  PropTypes
+} from 'react';
+import {
+  connect
+} from 'react-redux';
+import {
+  createSelector
+} from 'reselect';
 
-import { getNotification, notificationActions } from 'src/core/notification';
-import { getTaskFilter, getVisibleTasks, tasksActions } from 'src/core/tasks';
+import {
+  getNotification,
+  notificationActions
+} from 'src/core/notification';
+import {
+  getTaskFilter,
+  getVisibleTasks,
+  tasksActions,
+  getTasks
+} from 'src/core/tasks';
+import {
+  getAuth
+} from 'src/core/auth';
 import Notification from '../../components/notification';
 import TaskFilters from '../../components/task-filters';
 import TaskForm from '../../components/task-form';
 import TaskList from '../../components/task-list';
+import ToDoListConfig from '../../components/to-do-list-config';
 
 
 export class Tasks extends Component {
   static propTypes = {
+    auth: PropTypes.object.isRequired,
     createTask: PropTypes.func.isRequired,
     deleteTask: PropTypes.func.isRequired,
     dismissNotification: PropTypes.func.isRequired,
@@ -21,7 +43,7 @@ export class Tasks extends Component {
     loadTasks: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     notification: PropTypes.object.isRequired,
-    tasks: PropTypes.instanceOf(List).isRequired,
+    posts: PropTypes.instanceOf(List).isRequired,
     undeleteTask: PropTypes.func.isRequired,
     unloadTasks: PropTypes.func.isRequired,
     updateTask: PropTypes.func.isRequired
@@ -43,7 +65,9 @@ export class Tasks extends Component {
   }
 
   renderNotification() {
-    const { notification } = this.props;
+    const {
+      notification
+    } = this.props;
     return (
       <Notification
         action={this.props.undeleteTask}
@@ -56,6 +80,8 @@ export class Tasks extends Component {
   }
 
   render() {
+    const authId = this.props.auth.get('id') || '';
+    const isPrivate = this.props.accountConfig.get('is_private');
     return (
       <div className="g-row">
         <div className="g-col">
@@ -64,11 +90,12 @@ export class Tasks extends Component {
 
         <div className="g-col">
           <div>
-            <TaskFilters filter={this.props.filterType} />
+            { isPrivate !== null && <TaskFilters filter={this.props.filterType} /> }
+            <ToDoListConfig isPrivate={isPrivate} authId={authId} />
           </div>
           <TaskList
             deleteTask={this.props.deleteTask}
-            tasks={this.props.tasks}
+            tasks={this.props.posts}
             updateTask={this.props.updateTask}
           />
         </div>
@@ -88,15 +115,18 @@ const mapStateToProps = createSelector(
   getNotification,
   getTaskFilter,
   getVisibleTasks,
-  (notification, filterType, tasks) => ({
+  getAuth,
+  getTasks,
+  (notification, filterType, posts, auth, accountConfig) => ({
     notification,
     filterType,
-    tasks
+    posts,
+    auth,
+    accountConfig
   })
 );
 
-const mapDispatchToProps = Object.assign(
-  {},
+const mapDispatchToProps = Object.assign({},
   tasksActions,
   notificationActions
 );

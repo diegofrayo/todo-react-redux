@@ -1,4 +1,7 @@
-import { List, Record } from 'immutable';
+import {
+  List,
+  Record
+} from 'immutable';
 
 import {
   SIGN_OUT_SUCCESS
@@ -9,6 +12,7 @@ import {
   DELETE_TASK_SUCCESS,
   FILTER_TASKS,
   LOAD_TASKS_SUCCESS,
+  UPDATE_ACCOUNT_CONFIG,
   UPDATE_TASK_SUCCESS
 } from './action-types';
 
@@ -16,43 +20,58 @@ import {
 export const TasksState = new Record({
   deleted: null,
   filter: '',
-  list: new List(),
-  previous: null
+  is_private: null,
+  name: '',
+  posts: new List(),
+  previous: null,
+  public: {
+    lists: [],
+    selectedList: {}
+  }
 });
 
 
-export function tasksReducer(state = new TasksState(), {payload, type}) {
+export function tasksReducer(state = new TasksState(), {
+  payload,
+  type
+}) {
   switch (type) {
     case CREATE_TASK_SUCCESS:
       return state.merge({
         deleted: null,
         previous: null,
-        list: state.deleted && state.deleted.key === payload.key ?
-              state.previous :
-              state.list.unshift(payload)
+        posts: state.deleted && state.deleted.key === payload.key ?
+          state.previous : state.posts.unshift(payload)
       });
 
     case DELETE_TASK_SUCCESS:
       return state.merge({
         deleted: payload,
-        previous: state.list,
-        list: state.list.filter(task => task.key !== payload.key)
+        previous: state.posts,
+        posts: state.posts.filter(task => task.key !== payload.key)
       });
 
     case FILTER_TASKS:
       return state.set('filter', payload.filterType || '');
 
     case LOAD_TASKS_SUCCESS:
-      return state.set('list', new List(payload.reverse()));
+      return state.merge({
+        is_private: payload.is_private,
+        name: payload.name,
+        posts: new List(payload.posts.reverse())
+      });
 
     case UPDATE_TASK_SUCCESS:
       return state.merge({
         deleted: null,
         previous: null,
-        list: state.list.map(task => {
+        posts: state.posts.map(task => {
           return task.key === payload.key ? payload : task;
         })
       });
+
+    case UPDATE_ACCOUNT_CONFIG:
+      return state.merge(payload);
 
     case SIGN_OUT_SUCCESS:
       return new TasksState();

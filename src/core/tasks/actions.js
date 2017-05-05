@@ -9,6 +9,7 @@ import {
   LOAD_TASKS_SUCCESS,
   UNDELETE_TASK_ERROR,
   UNLOAD_TASKS_SUCCESS,
+  UPDATE_ACCOUNT_CONFIG,
   UPDATE_TASK_ERROR,
   UPDATE_TASK_SUCCESS
 } from './action-types';
@@ -94,10 +95,10 @@ export function updateTaskSuccess(task) {
   };
 }
 
-export function loadTasksSuccess(tasks) {
+export function loadTodoListSuccess(todoList) {
   return {
     type: LOAD_TASKS_SUCCESS,
-    payload: tasks
+    payload: todoList
   };
 }
 
@@ -111,7 +112,7 @@ export function filterTasks(filterType) {
 export function loadTasks() {
   return (dispatch, getState) => {
     const { auth } = getState();
-    taskList.path = `tasks/${auth.id}`;
+    taskList.path = `tasks/${auth.id}/`;
     taskList.subscribe(dispatch);
   };
 }
@@ -120,5 +121,11 @@ export function unloadTasks() {
   taskList.unsubscribe();
   return {
     type: UNLOAD_TASKS_SUCCESS
+  };
+}
+
+export function updateAccountConfig() {
+  return {
+    type: UPDATE_ACCOUNT_CONFIG
   };
 }
