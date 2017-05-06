@@ -6,14 +6,20 @@ import {
   connect
 } from 'react-redux';
 import {
+  browserHistory
+} from 'react-router';
+import {
+  paths
+} from 'src/views/routes.js';
+import {
   authActions
 } from 'src/core/auth';
 import TaskList from 'src/views/components/task-list';
 import PublicTodoListContainer from 'src/views/components/public-todo-list-container';
-
 import {
-  taskList as firebaseHelper
-} from 'src/core/tasks/task-list';
+  getPublicLists,
+  updateSelectedList
+} from 'src/core/tasks/actions';
 
 class Public extends Component {
 
@@ -25,44 +31,33 @@ class Public extends Component {
   }
 
   componentDidMount() {
-    firebaseHelper.getPublicLists()
-      .then((lists) => {
-        this.setState({
-          list: lists
-        });
-      })
-      .catch(() => {});
+    this.props.dispatch(getPublicLists());
   }
 
-
-
-  handleRowNavigation = rowId => {
-    console.log('jjj');
+  handleRowNavigation = task => {
+    this.props.dispatch(updateSelectedList(task));
+    browserHistory.push(paths.PUBLIC_TODO_LIST(task.id));
   }
 
   render() {
-   return (
-      <div
-        style={{
-        display: 'flex',
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column'
-      }}>
-        <div style={{ display: 'flex', flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>public page</div>
-          <div style={{ flex: 2, width: '100%', padding: '0 50px' }}>
-            <PublicTodoListContainer
-              title="test title"
-              handleRowNavigation={this.handleRowNavigation}
-              tasks={this.state.list}
-            />
-          </div>
+    return (
+      <div className="g-row">
+        <div className="g-col">
+          <h2 style={{margin: '30px 0'}}>Public ToDo Lists</h2>
+          <PublicTodoListContainer
+            handleRowNavigation={this.handleRowNavigation}
+            tasks={this.props.tasks}
+          />
+        </div>
       </div>
     );
   }
 }
 
-Public.propTypes = {};
+const mapStateToProps = state => {
+  return {
+    tasks: state.tasks.public
+  }
+}
 
-export default connect(null, authActions)(Public);
+export default connect(mapStateToProps)(Public);

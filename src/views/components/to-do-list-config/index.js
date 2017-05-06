@@ -2,7 +2,6 @@ import React, {
   Component,
   PropTypes
 } from 'react';
-
 import {
   taskList as firebaseHelper
 } from 'src/core/tasks/task-list';
@@ -21,15 +20,11 @@ class ToDoListConfig extends Component {
   }
 
   updateConfig() {
-
-    firebaseHelper.updateAccountConfig(`tasks/${this.props.authId}`, {
-        is_private: !this.props.isPrivate
-      })
-      .then(() => {
-
-      })
-      .catch(() => {});
-
+    const authId = `tasks/${this.props.authId}`;
+    const data = {
+      is_private: !this.props.isPrivate
+    };
+    this.props.handlePrivacyClick(authId, data);
   }
 
   share() {

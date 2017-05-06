@@ -4,7 +4,6 @@ import React, {
 } from 'react';
 import classNames from 'classnames';
 
-
 class PublicTodoListItem extends Component {
 
   static propTypes = {
@@ -17,26 +16,19 @@ class PublicTodoListItem extends Component {
       task
     } = this.props;
     return (
-      <div
-        className={classNames('task-item')}
-        tabIndex="0">
-
+      <div className={classNames('task-item')} tabIndex="0">
         <div className="cell" style={{ flex: 2 }} >
-          <p>{task.name} ({task.posts.length})</p>
+          <p>{task.name} ({task.posts ? task.posts.length : 0})</p>
         </div>
-
         <div className="cell" style={{ padding: 0, justifyContent: 'flex-end' }}>
           <button
             aria-hidden={'goTo'}
             aria-label="navigate"
+            style={{paddingLeft: 3}}
             className={classNames('btn task-item__button')}
-            onClick={() => {
-            //this.props.navigateTo('task id');
-            console.log('click row')
-            }}
-            //ref={c => this.deleteButton = c}
+            onClick={() => this.props.navigateTo(this.props.task)}
             type="button">
-            <i className="icon fa fa-arrow-right" style={{ fontSize: 20 }} aria-hidden="true"></i>
+            <i className="icon fa fa-arrow-right" style={{ fontSize: 20, color: '#999' }} aria-hidden="true"></i>
           </button>
         </div>
       </div>
@@ -45,6 +37,6 @@ class PublicTodoListItem extends Component {
   }
 }
 
-PublicTodoListItem.prototypes = {}
+PublicTodoListItem.propTypes = {}
 
 export default PublicTodoListItem;

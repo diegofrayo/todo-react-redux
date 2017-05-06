@@ -5,6 +5,10 @@ export function getTasks(state) {
   return state.tasks;
 }
 
+export function getUsername(state) {
+  return state.tasks.get('name');
+}
+
 export function getTaskList(state) {
   return getTasks(state).posts;
 }

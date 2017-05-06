@@ -1,6 +1,7 @@
 import {
   List,
-  Record
+  Record,
+  Map
 } from 'immutable';
 
 import {
@@ -11,11 +12,16 @@ import {
   CREATE_TASK_SUCCESS,
   DELETE_TASK_SUCCESS,
   FILTER_TASKS,
+  GET_LIST_BY_ID_SUCCESS,
+  GET_PUBLIC_LIST_ERROR,
+  GET_PUBLIC_LIST_SUCCESS,
   LOAD_TASKS_SUCCESS,
   UPDATE_ACCOUNT_CONFIG,
+  UPDATE_ACCOUNT_ERROR,
+  UPDATE_ACCOUNT_SUCCESS,
+  UPDATE_SELECTED_LIST,
   UPDATE_TASK_SUCCESS
 } from './action-types';
-
 
 export const TasksState = new Record({
   deleted: null,
@@ -24,10 +30,8 @@ export const TasksState = new Record({
   name: '',
   posts: new List(),
   previous: null,
-  public: {
-    lists: [],
-    selectedList: {}
-  }
+  public: new List(),
+  selectedList: new Map({})
 });
 
 
@@ -36,6 +40,7 @@ export function tasksReducer(state = new TasksState(), {
   type
 }) {
   switch (type) {
+
     case CREATE_TASK_SUCCESS:
       return state.merge({
         deleted: null,
@@ -43,6 +48,18 @@ export function tasksReducer(state = new TasksState(), {
         posts: state.deleted && state.deleted.key === payload.key ?
           state.previous : state.posts.unshift(payload)
       });
+
+    case GET_PUBLIC_LIST_ERROR:
+      return state;
+
+    case GET_PUBLIC_LIST_SUCCESS:
+      return state.set('public', [].concat(payload));
+
+    case GET_PUBLIC_LIST_ERROR:
+      return state;
+
+    case UPDATE_SELECTED_LIST:
+      return state.set('selectedList', payload);
 
     case DELETE_TASK_SUCCESS:
       return state.merge({
@@ -70,7 +87,7 @@ export function tasksReducer(state = new TasksState(), {
         })
       });
 
-    case UPDATE_ACCOUNT_CONFIG:
+    case UPDATE_ACCOUNT_SUCCESS:
       return state.merge(payload);
 
     case SIGN_OUT_SUCCESS:

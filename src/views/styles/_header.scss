@@ -41,7 +41,6 @@
     &:last-child {
       margin-left: 12px;
       padding-left: 12px;
-      border-left: 1px solid #333;
     }
 
     &:first-child {
@@ -76,4 +75,12 @@
       line-height: 24px;
     }
   }
+}
+
+.header__username{
+  float: left;
+  font-size: 18px;
+  margin-right: 10px;
+  position: relative;
+  top: -2px;
 }

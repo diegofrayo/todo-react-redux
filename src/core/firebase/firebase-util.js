@@ -2,10 +2,6 @@ import {
   firebaseDb
 } from './firebase';
 
-// import {
-//   getAuth
-// } from 'src/core/auth';
-
 export class FirebaseUtil {
   constructor(actions, modelClass, path = null) {
     this._actions = actions;
@@ -63,11 +59,9 @@ export class FirebaseUtil {
       let payload = snapshot.val();
 
       if (payload === null) {
-        // const authId = getAuth().id;
-        // name: `user-${authId ? authId : 'anonymous'}`,
         payload = {
           is_private: false,
-          name: 'heyeee'
+          name: `user-${new Date().getTime()}`
         };
         snapshot.ref.update(payload);
       }
@@ -114,7 +108,9 @@ export class FirebaseUtil {
   }
 
   getPublicLists() {
+
     return new Promise((resolve, reject) => {
+
       firebaseDb.ref('tasks')
         .once('value', snapshot => {
 
@@ -122,8 +118,24 @@ export class FirebaseUtil {
           const publicLists = [];
 
           if (data !== null) {
+
             Object.keys(data).forEach((key) => {
+
               const list = data[key];
+              list.id = key;
+              let posts = list.posts;
+              let postsArray = [];
+
+              if (posts) {
+                Object.keys(posts).map((key) => {
+                  const post = posts[key];
+                  if (!post.is_private) {
+                    postsArray.push(post);
+                  }
+                });
+                list.posts = postsArray;
+              }
+
               if (list.is_private === false) {
                 publicLists.push(list);
               }
@@ -146,19 +158,22 @@ export class FirebaseUtil {
           if (data !== null) {
 
             list = {
+              id: id,
               name: data.name,
               posts: []
             };
 
             let posts = data.posts;
+            let postsArray = [];
 
             if (posts) {
               Object.keys(posts).forEach((key) => {
                 const post = posts[key];
                 if (!post.is_private) {
-                  posts.push(post);
+                  postsArray.push(post);
                 }
               });
+              list.posts = postsArray;
             }
           }
 

@@ -20,7 +20,8 @@ import {
   getTaskFilter,
   getVisibleTasks,
   tasksActions,
-  getTasks
+  getTasks,
+  updateAccountConfig
 } from 'src/core/tasks';
 import {
   getAuth
@@ -64,6 +65,10 @@ export class Tasks extends Component {
     this.props.unloadTasks();
   }
 
+  handlePrivacyButton = (path, data) => {
+    this.props.updateAccountConfig(path, data);
+  }
+
   renderNotification() {
     const {
       notification
@@ -80,8 +85,10 @@ export class Tasks extends Component {
   }
 
   render() {
+
     const authId = this.props.auth.get('id') || '';
     const isPrivate = this.props.accountConfig.get('is_private');
+
     return (
       <div className="g-row">
         <div className="g-col">
@@ -90,8 +97,8 @@ export class Tasks extends Component {
 
         <div className="g-col">
           <div>
-            { isPrivate !== null && <TaskFilters filter={this.props.filterType} /> }
-            <ToDoListConfig isPrivate={isPrivate} authId={authId} />
+            <TaskFilters filter={this.props.filterType} />
+            { isPrivate !== null && <ToDoListConfig isPrivate={isPrivate} authId={authId} handlePrivacyClick={this.handlePrivacyButton} /> }
           </div>
           <TaskList
             deleteTask={this.props.deleteTask}

@@ -59,6 +59,19 @@
   &:first-child {
     margin: 0;
   }
+
+  &--privacy{
+    font-size: 24px;
+    color: #555;
+
+    &--private{
+      color: #6F7110;
+    }
+
+    &:hover{
+      color: #999
+    }
+  }
 }
 
 .icon {

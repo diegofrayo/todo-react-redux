@@ -10,9 +10,10 @@ import {
 
 class TaskItem extends Component {
   static propTypes = {
-    deleteTask: PropTypes.func.isRequired,
-    task: PropTypes.instanceOf(Task).isRequired,
-    updateTask: PropTypes.func.isRequired
+    deleteTask: PropTypes.func,
+    task: PropTypes.object.isRequired,
+    updateTask: PropTypes.func,
+    isPublicPage: PropTypes.bool
   };
 
   constructor(props, context) {
@@ -24,10 +25,11 @@ class TaskItem extends Component {
 
     this.delete = ::this.delete;
     this.editTitle = ::this.editTitle;
+    this.onKeyUp = ::this.onKeyUp;
     this.saveTitle = ::this.saveTitle;
     this.stopEditing = ::this.stopEditing;
+    this.togglePrivacy = ::this.togglePrivacy;
     this.toggleStatus = ::this.toggleStatus;
-    this.onKeyUp = ::this.onKeyUp;
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -72,6 +74,13 @@ class TaskItem extends Component {
     let checked = !this.props.task.completed;
     this.props.updateTask(this.props.task, {
       completed: checked
+    });
+  }
+
+  togglePrivacy() {
+    let checked = !this.props.task.is_private;
+    this.props.updateTask(this.props.task, {
+      is_private: checked
     });
   }
 
@@ -123,7 +132,7 @@ class TaskItem extends Component {
           <button
             aria-hidden={editing}
             aria-label="Mark task as completed"
-            className={classNames('btn task-item__button', {'hide': editing})}
+            className={classNames('btn task-item__button', {'hide': editing || this.props.isPublicPage})}
             onClick={this.toggleStatus}
             ref={c => this.toggleStatusButton = c}
             type="button">
@@ -153,14 +162,15 @@ class TaskItem extends Component {
           <button
             aria-hidden={editing}
             aria-label="Privacy"
-            className={classNames('btn task-item__button', {'hide': editing})}
+            onClick={this.togglePrivacy}
+            className={classNames('btn task-item__button', {'hide': editing || this.props.isPublicPage})}
             type="button">
-            <i className="fa fa-lock" aria-hidden="true"></i>
+            <i className={classNames('fa fa-lock task-item__button--privacy', {'hide': editing})} aria-hidden="true" style={{ color: (!task.is_private ? '#555' : '#6F7110') }}></i>
           </button>
           <button
             aria-hidden={editing}
             aria-label="Edit task"
-            className={classNames('btn task-item__button', {'hide': editing})}
+            className={classNames('btn task-item__button', {'hide': editing || this.props.isPublicPage})}
             onClick={this.editTitle}
             ref={c => this.editButton = c}
             type="button">
@@ -171,7 +181,7 @@ class TaskItem extends Component {
           <button
             aria-hidden={editing}
             aria-label="Delete task"
-            className={classNames('btn task-item__button', {'hide': editing})}
+            className={classNames('btn task-item__button', {'hide': editing || this.props.isPublicPage})}
             onClick={this.delete}
             ref={c => this.deleteButton = c}
             type="button">
